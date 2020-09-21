@@ -63,6 +63,11 @@
         <div class="card-header">
             Computer
         </div>
+
+        <div class="progress">
+            {{--            Unknown--}}
+            <div class="progress-bar text-center" role="progressbar" name="time" id="timeComp" style="width: 100%;" value="1000" aria-valuenow="1000" aria-valuemin="0" aria-valuemax="1000">10s</div>
+        </div>
         <div class="card-body">
             <h5 class="card-title">Are you ready</h5>
             <p class="card-text">If you want to win me, you need to eat more breads</p>
@@ -103,11 +108,11 @@
 <div class="mt-5" style="margin-left: 50px;flex-wrap: wrap;display: flex;justify-content: center;">
     <div class="card text-center">
         <div class="card-header">
-            Unknown
+            Sapa
         </div>
         <div class="progress">
             {{--            Unknown--}}
-            <div class="progress-bar text-center" role="progressbar" name="time" id="second" style="width: 100%;" value="1000" aria-valuenow="1000" aria-valuemin="0" aria-valuemax="1000">10s</div>
+            <div class="progress-bar text-center" role="progressbar" name="time" id="timeUser" style="width: 100%;" value="1000" aria-valuenow="1000" aria-valuemin="0" aria-valuemax="1000">10s</div>
         </div>
 
 
@@ -200,11 +205,23 @@
                     getWordIndexToStart = Math.floor(Math.random() * data.length);
                     WordCard.value = data[getWordIndexToStart]['word'];
                 });
-            TimeSecond(false);
-            document.getElementById('writeword').disabled=false;
+
+
+            let WhoFirst = Math.floor(Math.random() *2);
+                console.log(WhoFirst);
+            if(WhoFirst==0){
+                TimeSecond2(false);
+                compWord();
+            }else if(WhoFirst==1){
+                TimeSecond(false);
+                document.getElementById('writeword').disabled=false;
+                ErrorMessage.style.color="black";
+                ErrorMessage.innerHTML="Are you ready";
+            }
         }
-        ErrorMessage.style.color="black";
-        ErrorMessage.innerHTML="Are you ready";
+
+
+
     }
 
     function SendWord(){
@@ -264,7 +281,7 @@
                 if(typeof getWordIndexToComp !== 'undefined' && getWordIndexToComp.length > 0){
                     getWordRandom = getWordIndexToComp[Math.floor(Math.random() * getWordIndexToComp.length)];
                     WordCard.value = getWordRandom;
-                    TimeSecond(false);
+                    TimeSecond2(true);
                     document.getElementById('writeword').disabled=false;
                     // SendWord();
                     // WordCard.append('<h3 name="wordcard" id="middleword" value="'+getWordRandom+'">'+getWordRandom+'<h3>');
@@ -278,7 +295,41 @@
 
     function TimeSecond(condition){
         var count=100;
-        let getTag = document.getElementById("second");
+        let getTag = document.getElementById("timeUser");
+        function countNum(){
+            if(count>=0){
+                getTag.innerHTML = count/10+" s";
+                getTag.style.width = count+"%";
+
+            }else if(count===-10){
+                clearTimeout(timerId)
+                ErrorMessage.style.color = "red";
+                ErrorMessage.innerHTML="Game Over";
+                document.getElementById('writeword').disabled=true;
+                // compWord();
+
+            }
+            count-=10;
+            console.log(count);
+
+        }
+
+        if(condition){
+            clearInterval(timerId);
+            getTag.style.width=100+'%';
+            getTag.innerHTML = 10+" s";
+            TimeSecond2(false);
+        }else{
+            timerId= setInterval(countNum,1000);
+        }
+
+
+    }
+
+
+    function TimeSecond2(condition){
+        var count=100;
+        let getTag = document.getElementById("timeComp");
         function countNum(){
             if(count>=0){
                 getTag.innerHTML = count/10+" s";
@@ -300,14 +351,12 @@
             clearInterval(timerId);
             getTag.style.width=100+'%';
             getTag.innerHTML = 10+" s";
+            TimeSecond(false);
         }else{
             timerId= setInterval(countNum,1000);
         }
 
     }
-
-
-
 
 
     // function Change(){
